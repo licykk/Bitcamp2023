@@ -2,27 +2,27 @@ import discord
 import os
 from dotenv import load_dotenv
 from discord.ext import commands
+import logging
+
 
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 PREFIX = os.getenv('DISCORD_PREFIX')
-bot = commands.Bot(command_prefix=PREFIX)
 
 
 intents = discord.Intents.default()
 intents.message_content = True
 
-client = discord.Client(intents=intents)
+# We are using the commands framework from discord.py
+bot = commands.Bot(command_prefix=PREFIX, intents=intents)
 
-@client.event
+@bot.event
 async def on_ready():
-    print('We have logged in as ' + str(client.user))
+    print('We have logged in as ' + str(bot.user))
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
+@bot.command()
+async def hello(ctx):
+    await ctx.send('Hello! :plead:')
 
-    if message.content.startswith('$hello'):
-        await message.channel.send('Hello!')
+bot.run(TOKEN)
