@@ -5,26 +5,33 @@ import requests
 import json
 import os
 
-customerId = '6431a6c89683f20dd51877d1'
-apiKey = os.getenv('CAPITALONEAPI')
+APIKEY = os.getenv('CAPITALONEAPI')
+URL_PATH = 'http://api.nessieisreal.com/'
 
-url = 'http://api.reimaginebanking.com/customers/{}/accounts?key={}'.format(customerId,apiKey)
-payload = {
-  "type": "Savings",
-  "nickname": "test",
-  "rewards": 10000,
-  "balance": 10000,	
-}
-# Create a Savings Account
-response = requests.post( 
-	url, 
-	data=json.dumps(payload),
-	headers={'content-type':'application/json'},
-	)
+# Create customer, all arguments are strings
+def create_customer(first_name, last_name, st_num, st_name, city, state, zip):
+    url = '{}customers?key={}'.format(URL_PATH, APIKEY)
+    payload = {
+        "first_name": first_name,
+        "last_name": last_name,
+        "address": {
+            "street_number": st_num,
+            "street_name": st_name,
+            "city": city,
+            "state": state,
+            "zip": zip
+        }
+    }
 
-if response.status_code == 201:
-	print('account created')
+    # Create a customer request
+    response = requests.post( 
+        url, 
+        data=json.dumps(payload),
+        headers={'content-type':'application/json'},
+        )
 
-print(response)
-print(response.content)
-print(response.headers)
+    if response.status_code == 201:
+        print('customer created')
+    else: #raise error later 
+        print("No customer created")
+
