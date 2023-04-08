@@ -59,8 +59,3 @@ def create_account(cust_id, act_type, nickname, rewards, balance, act_num):
         print('account created')
     else: #raise error later 
         print("No account created")
-        print(response)
-        print(response.content)
-
-
-create_account('6431bb819683f20dd51877da', 'Credit Card', 'nickname', 10, 1000, '1234568890123456')
