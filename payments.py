@@ -141,7 +141,6 @@ def get_cust_accounts(cust_id: str):
             balance = i['balance']
             acct_balc[acct] = balance
 
-        print(acct_balc)
         return acct_balc
     
     return None #error ocurred

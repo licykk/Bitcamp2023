@@ -8,6 +8,8 @@ from database_functions import *
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_cockroachdb import run_transaction
 from payments import *
+from colorama import Back, Fore, Style
+import datetime
 
 DB_URI = os.environ['DATABASE_URL'].replace("postgresql://", "cockroachdb://")
 try:
@@ -50,15 +52,31 @@ async def hello(ctx):
 
 
 @bot.tree.command(description="Gets information on a user. Defaults to the user who ran the command.")
-async def whois(interaction: discord.Interaction, member: discord.Member=None):
-    if member is None:
-        member = interaction.user
-    embed = discord.Embed(title="User Info", description=f"Here's the user information for {member}", color=discord.Color.blue(), timestamp=datetime.datetime.utcnow())
-    embed.set_thumbnail(url=member.avatar)
-    embed.add_field(name="User ID", value=member.id)
-    embed.add_field(name="User Name", value=f'{member.name}#{member.discriminator}')
-    embed.add_field(name="Nickname", value=member.display_name)
-    await interaction.response.send_message(embed=embed)
+async def userinfo(interaction: discord.Interaction):
+    print('reached')
+    embed = discord.Embed(title="User Info", description=f"Here's the user information for {interaction.user}", color=discord.Color.blue(), timestamp=datetime.datetime.utcnow())
+    print('reached2')
+    embed.set_thumbnail(url=interaction.user.avatar)
+    print('reached3')
+    embed.add_field(name="User ID", value=interaction.user.id)
+    print('reached4')
+    embed.add_field(name="User Name", value=f'{interaction.user.name}#{interaction.user.discriminator}')
+    print('reached5')
+    embed.add_field(name="Nickname", value=interaction.user.display_name)
+
+    print('before database')
+    cust_id = run_transaction(sessionmaker(bind=ENGINE),
+                lambda s: get_customer_db(s, interaction.user.id))
+    cust_id = cust_id.strip()
+
+    cust_accts = get_cust_accounts(cust_id)
+
+    print(cust_accts)
+    for k, v in cust_accts.items():
+        print(v)
+        embed.add_field(name="Account balance", value=v)
+
+    await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @bot.tree.command(description="Requests a user to pay a certain amount of money to you.")
 async def requestpayment(interaction: discord.Interaction, member: discord.Member, amount: int, comment: str=None):
