@@ -71,9 +71,12 @@ def create_account(cust_id, act_type, nickname, rewards, balance, act_num):
     else: #raise error later 
         print("No account created")
 
+<<<<<<< HEAD
     return None #error occurred
 
 
+=======
+>>>>>>> 6eca37a39e1663f8b9f3e5b55e7f17ae7879521b
 # Initiate transaction, all arguments are strings
 # medium usually 'balance'
 # all arguments are string except amt as int (this must be int! mb double allowed)
