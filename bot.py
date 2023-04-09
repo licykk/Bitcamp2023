@@ -50,12 +50,41 @@ async def hello(ctx):
 
 #     bot.run(TOKEN)
 
-@bot.tree.command(name='create', description="Create customer")
+@bot.tree.command(description="Create customer")
 async def create(interaction: discord.Interaction, first_name: str, last_name: str):
     customer_id = create_customer(first_name, last_name, "123", "Filler", "Filler", "MD", "20871")
     await interaction.response.send_message("Customer created for " + first_name + " " + last_name)
+    run_transaction(sessionmaker(bind=ENGINE), 
+                    lambda s: create_customer_db(s, interaction.user.id, customer_id))
+
+@bot.command(description="Create account")
+async def setup_account(interaction: discord.Interaction):
+    cust_id = run_transaction(sessionmaker(bind=ENGINE),
+                              lambda s: get_customer_db(s, interaction.user.id))
+    cust_id = cust_id.strip()
+    print("Customer ID:", cust_id)
+        
+    act_type = "Checking"
+    nickname = f"Account for {interaction.user}"
+    rewards = 1000
+    balance = 1000
+    act_num = "1234567890123456"
+
+    account_cnt = count_cust_accounts(cust_id)
+
+    if account_cnt > 1:
+        await interaction.response.send_message("You already have an account")
+        return
+    elif account_cnt == -1:
+        await interaction.response.send_message("Request error checking account count")
+        return
+    
+    acct_id = create_account(cust_id, act_type, nickname, rewards, balance, act_num)
+    print(acct_id)
     run_transaction(sessionmaker(bind=ENGINE),
-                lambda s: create_customer_db(s, interaction.user.id, customer_id))
+                    lambda s: create_account_db(s, cust_id, acct_id))
+
+
 
 @bot.tree.command(description="Gets information on a user. Defaults to the user who ran the command.")
 async def userinfo(interaction: discord.Interaction):
