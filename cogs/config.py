@@ -31,8 +31,7 @@ class Config(commands.Cog):
                 for ext in os.listdir("./cogs/"):
                     if ext.endswith(".py") and not ext.startswith("_"):
                         try:
-                            self.bot.unload_extension(f"cogs.{ext[:-3]}")
-                            self.bot.load_extension(f"cogs.{ext[:-3]}")
+                            await self.bot.reload_extension(f"cogs.{ext[:-3]}")
                             embed.add_field(
                                 name=f"Reloaded: `{ext}`",
                                 value='\uFEFF',
@@ -50,7 +49,7 @@ class Config(commands.Cog):
             # reload the specific cog
             async with ctx.typing():
                 embed = discord.Embed(
-                    title="Reloading all cogs!",
+                    title=f"Reloading cog {cog}!",
                     color=0x808080,
                     timestamp=ctx.message.created_at
                 )
@@ -65,8 +64,7 @@ class Config(commands.Cog):
 
                 elif ext.endswith(".py") and not ext.startswith("_"):
                     try:
-                        self.bot.unload_extension(f"cogs.{ext[:-3]}")
-                        self.bot.load_extension(f"cogs.{ext[:-3]}")
+                        await self.bot.reload_extension(f"cogs.{ext[:-3]}")
                         embed.add_field(
                             name=f"Reloaded: `{ext}`",
                             value='\uFEFF',
