@@ -4,7 +4,9 @@
 import requests
 import json
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 API_KEY = os.getenv('CAPITALONE_API_KEY')
 URL_PATH = 'http://api.nessieisreal.com/'
 
@@ -36,6 +38,7 @@ def create_customer(first_name, last_name, st_num, st_name, city, state, zip):
         print("No customer created")
 
 # Create account, all arguments are strings except rewards and balance are int
+#checking accounts only
 def create_account(cust_id, act_type, nickname, rewards, balance, act_num):
     url = '{}customers/{}/accounts?key={}'.format(URL_PATH, cust_id, API_KEY)
     payload = {
@@ -60,15 +63,14 @@ def create_account(cust_id, act_type, nickname, rewards, balance, act_num):
 
 
 # Initiate transaction, all arguments are strings
-# medium usually balance
-# all arguments are string except amt as int
-def create_transaction(src_act_id, medium, dest_act_id, status, description, amt):
+# medium usually 'balance'
+# all arguments are string except amt as int (this must be int! mb double allowed)
+def create_transaction(src_act_id, medium, dest_act_id, description, amt):
     url = '{}accounts/{}/transfers?key={}'.format(URL_PATH, src_act_id, API_KEY)
     payload = {
         "medium": medium,
         "payee_id": dest_act_id,
         "transaction_date": "2023-04-08",
-        "status": status,
         "description": description,
         "amount": amt
     }
@@ -85,5 +87,3 @@ def create_transaction(src_act_id, medium, dest_act_id, status, description, amt
     else: #raise error later 
         print("No transaction created")
 
-
-create_transaction('6431e0c09683f20dd51877eb', 'balance', '6431ca439683f20dd51877e2', 'pending', 'description', 500)
