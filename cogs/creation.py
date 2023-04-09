@@ -21,13 +21,13 @@ class Creation(commands.Cog):
     async def on_ready(self):
         print(f"{self.__class__.__name__} Cog has been loaded\n-----")
 
-    @commands.command(name='create', description="Create customer")
-    async def create(self, ctx, first_name: str, last_name: str, *args):
-        customer_id = create_customer(first_name, last_name, args[0], args[1], args[2], args[3], args[4])
-        print(customer_id)
-        print(ctx.author)
-        run_transaction(sessionmaker(bind=ENGINE),
-                    lambda s: create_customer_db(s, ctx.author.id, customer_id))
+    # @commands.command(name='create', description="Create customer")
+    # async def create(self, ctx, first_name: str, last_name: str, *args):
+    #     customer_id = create_customer(first_name, last_name, args[0], args[1], args[2], args[3], args[4])
+    #     print(customer_id)
+    #     print(ctx.author)
+    #     run_transaction(sessionmaker(bind=ENGINE),
+    #                 lambda s: create_customer_db(s, ctx.author.id, customer_id))
         
     @commands.command(name='setupAccount', description="Create account")
     async def setup_account(self, ctx):

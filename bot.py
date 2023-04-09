@@ -50,18 +50,19 @@ async def hello(ctx):
 
 #     bot.run(TOKEN)
 
+@bot.tree.command(name='create', description="Create customer")
+    async def create(interaction: discord.Interaction, first_name: str, last_name: str):
+        customer_id = create_customer(first_name, last_name, "123", "Filler", "Filler", "MD", "20871")
+        await interaction.response.send_message("Customer created for " + first_name + " " + last_name)
+        run_transaction(sessionmaker(bind=ENGINE),
+                    lambda s: create_customer_db(s, interaction.user.id, customer_id))
 
 @bot.tree.command(description="Gets information on a user. Defaults to the user who ran the command.")
 async def userinfo(interaction: discord.Interaction):
-    print('reached')
     embed = discord.Embed(title="User Info", description=f"Here's the user information for {interaction.user}", color=discord.Color.blue(), timestamp=datetime.datetime.utcnow())
-    print('reached2')
     embed.set_thumbnail(url=interaction.user.avatar)
-    print('reached3')
     embed.add_field(name="User ID", value=interaction.user.id)
-    print('reached4')
     embed.add_field(name="User Name", value=f'{interaction.user.name}#{interaction.user.discriminator}')
-    print('reached5')
     embed.add_field(name="Nickname", value=interaction.user.display_name)
 
     print('before database')
