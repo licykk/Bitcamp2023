@@ -130,3 +130,6 @@ dmypy.json
 
 # custom 
 run.sh
+
+# Mac
+.DS_Store
