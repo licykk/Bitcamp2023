@@ -58,7 +58,7 @@ async def create(interaction: discord.Interaction, first_name: str, last_name: s
                     lambda s: create_customer_db(s, interaction.user.id, customer_id))
 
 @bot.command(description="Create account")
-async def setup_account(interaction: discord.Interaction):
+async def setupaccount(interaction: discord.Interaction):
     cust_id = run_transaction(sessionmaker(bind=ENGINE),
                               lambda s: get_customer_db(s, interaction.user.id))
     cust_id = cust_id.strip()
