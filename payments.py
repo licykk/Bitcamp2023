@@ -34,8 +34,15 @@ def create_customer(first_name, last_name, st_num, st_name, city, state, zip):
 
     if response.status_code == 201:
         print('customer created')
+        resp = response.json()
+        cust_id = resp['objectCreated']['_id']
+        return cust_id
     else: #raise error later 
         print("No customer created")
+
+    return None #error occurred
+    
+    
 
 # Create account, all arguments are strings except rewards and balance are int
 #checking accounts only
@@ -58,8 +65,15 @@ def create_account(cust_id, act_type, nickname, rewards, balance, act_num):
 
     if response.status_code == 201:
         print('account created')
+        resp = response.json()
+        acct_id = resp['objectCreated']['_id']
+        return acct_id
     else: #raise error later 
         print("No account created")
+
+    return None #error occurred
+
+
 
 # Initiate transaction, all arguments are strings
 # medium usually 'balance'
@@ -83,6 +97,11 @@ def create_transaction(src_act_id, medium, dest_act_id, description, amt):
 
     if response.status_code == 201:
         print('transaction created')
+        resp = response.json()
+        transaction_id = resp['objectCreated']['_id']
+        return transaction_id
     else: #raise error later 
         print("No transaction created")
+
+    return None #error occurred
 
