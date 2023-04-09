@@ -51,11 +51,11 @@ async def hello(ctx):
 #     bot.run(TOKEN)
 
 @bot.tree.command(name='create', description="Create customer")
-    async def create(interaction: discord.Interaction, first_name: str, last_name: str):
-        customer_id = create_customer(first_name, last_name, "123", "Filler", "Filler", "MD", "20871")
-        await interaction.response.send_message("Customer created for " + first_name + " " + last_name)
-        run_transaction(sessionmaker(bind=ENGINE),
-                    lambda s: create_customer_db(s, interaction.user.id, customer_id))
+async def create(interaction: discord.Interaction, first_name: str, last_name: str):
+    customer_id = create_customer(first_name, last_name, "123", "Filler", "Filler", "MD", "20871")
+    await interaction.response.send_message("Customer created for " + first_name + " " + last_name)
+    run_transaction(sessionmaker(bind=ENGINE),
+                lambda s: create_customer_db(s, interaction.user.id, customer_id))
 
 @bot.tree.command(description="Gets information on a user. Defaults to the user who ran the command.")
 async def userinfo(interaction: discord.Interaction):
