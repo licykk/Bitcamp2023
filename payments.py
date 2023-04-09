@@ -105,3 +105,27 @@ def create_transaction(src_act_id, medium, dest_act_id, description, amt):
 
     return None #error occurred
 
+# obtain a dictionary from account number to balance of a specified customer
+def get_cust_accounts(cust_id: str):
+    url = '{}customers/{}/accounts?key={}'.format(URL_PATH, cust_id, API_KEY)
+
+    response = requests.get( 
+        url, 
+        headers={'content-type':'application/json'},
+        )
+
+
+    if response.status_code == 200:
+        print('Successful retrieval')
+        acct_balc = {}
+        resp = response.json()
+
+        for i in resp:
+            acct = i['_id']
+            balance = i['balance']
+            acct_balc[acct] = balance
+
+        print(acct_balc)
+        return acct_balc
+    
+    return None #error ocurred
