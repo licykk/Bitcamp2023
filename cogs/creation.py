@@ -30,17 +30,18 @@ class Creation(commands.Cog):
                     lambda s: create_customer_db(s, ctx.author.id, customer_id))
         
     @commands.command(name='setupAccount', description="Create account")
-    async def create_account(self, ctx):
+    async def setup_account(self, ctx):
 
         cust_id = run_transaction(sessionmaker(bind=ENGINE),
                     lambda s: get_customer_db(s, ctx.author.id))
+        cust_id = cust_id.strip()
         print("Customer ID:", cust_id)
-        return
+        
         act_type = "Checking"
         nickname = f"Account for {ctx.author}"
         rewards = 1000
         balance = 1000
-        act_num = "123456789012345"
+        act_num = "1234567890123456"
 
         acct_id = create_account(cust_id, act_type, nickname, rewards, balance, act_num)
         print(acct_id)
