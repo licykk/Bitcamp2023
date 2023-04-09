@@ -79,29 +79,45 @@ def create_account(cust_id, act_type, nickname, rewards, balance, act_num):
 # medium usually 'balance'
 # all arguments are string except amt as int (this must be int! mb double allowed)
 def create_transaction(src_act_id, medium, dest_act_id, description, amt):
-    url = '{}accounts/{}/transfers?key={}'.format(URL_PATH, src_act_id, API_KEY)
-    payload = {
-        "medium": medium,
-        "payee_id": dest_act_id,
-        "transaction_date": "2023-04-08",
-        "description": description,
-        "amount": amt
-    }
-
-    # Create an account request
-    response = requests.post( 
+    # balance checking of sender and amt to send
+    url = '{}accounts/{}?key={}'.format(URL_PATH, src_act_id, API_KEY)
+    response = requests.get( 
         url, 
-        data=json.dumps(payload),
         headers={'content-type':'application/json'},
         )
 
-    if response.status_code == 201:
-        print('transaction created')
+    if response.status_code == 200:
         resp = response.json()
-        transaction_id = resp['objectCreated']['_id']
-        return transaction_id
-    else: #raise error later 
-        print("No transaction created")
+        if resp['balance'] >= amt:
+            url = '{}accounts/{}/transfers?key={}'.format(URL_PATH, src_act_id, API_KEY)
+            payload = {
+                "medium": medium,
+                "payee_id": dest_act_id,
+                "transaction_date": "2023-04-08",
+                "description": description,
+                "amount": amt
+            }
+
+            # Create an account request
+            response = requests.post( 
+                url, 
+                data=json.dumps(payload),
+                headers={'content-type':'application/json'},
+                )
+
+            if response.status_code == 201:
+                print('transaction created')
+                resp = response.json()
+                transaction_id = resp['objectCreated']['_id']
+                return transaction_id
+            else: #raise error later 
+                print("No transaction created")
+
+        # end if
+        else:
+            print('Insufficient funds to transfer')
+    else:
+        print('Error checking failed')
 
     return None #error occurred
 
@@ -146,3 +162,5 @@ def count_cust_accounts(cust_id: str):
     else:
         return -1
     
+
+create_transaction('6432166b9683f20dd51877f8', 'balance', '64321d4d9683f20dd51877fc', 'error handeling', 30000)
