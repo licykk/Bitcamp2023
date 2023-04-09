@@ -26,5 +26,5 @@ class ErrorHandler(commands.Cog):
         await ctx.send(error)
 
 
-def setup(bot: commands.Bot):
-    bot.add_cog(ErrorHandler(bot))
+async def setup(bot):
+    await bot.add_cog(ErrorHandler(bot))
