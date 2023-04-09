@@ -43,6 +43,16 @@ class Creation(commands.Cog):
         balance = 1000
         act_num = "1234567890123456"
 
+        account_cnt = count_cust_accounts(cust_id)
+
+        if account_cnt > 1:
+            await ctx.send("You already have an account")
+            return
+        elif account_cnt == -1:
+            await ctx.send("Request error checking account count")
+            return
+
+
         acct_id = create_account(cust_id, act_type, nickname, rewards, balance, act_num)
         print(acct_id)
         run_transaction(sessionmaker(bind=ENGINE),
