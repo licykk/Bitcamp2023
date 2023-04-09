@@ -23,14 +23,14 @@ def create_account_db(session, customer_id, account_id):
 
     new_account = []
     new_account.append(CheckingAccount(account_id=account_id, customer_id=customer_id))
-    print(f"Saving new account with id {new_account} for customer {customer_id}.")
+    print(f"Saving new account with id {account_id} for customer {customer_id}.")
     session.add_all(new_account)
 
 
 def get_customer_db(session, discord_id):
     print("Getting customer id...")
     try:
-        customer = session.query(Customer).filter(Customer.discord_id == discord_id).one()
+        customer = session.query(Customer).filter(Customer.discord_id.contains(discord_id)).one()
     except NoResultFound:
         print("No customer was found")
     except MultipleResultsFound:
@@ -41,7 +41,7 @@ def get_customer_db(session, discord_id):
 def get_account_db(session, customer_id):
     print("Getting account id...")
     try:
-        account = session.query(CheckingAccount).filter(CheckingAccount.customer_id == customer_id).one()
+        account = session.query(CheckingAccount).filter(CheckingAccount.customer_id.contains(customer_id)).one()
     except NoResultFound:
         print("No account was found")
     except MultipleResultsFound:
