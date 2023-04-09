@@ -48,6 +48,7 @@ async def hello(ctx):
 
 #     bot.run(TOKEN)
 
+
 @bot.tree.command(description="Gets information on a user. Defaults to the user who ran the command.")
 async def whois(interaction: discord.Interaction, member: discord.Member=None):
     if member is None:
