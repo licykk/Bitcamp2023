@@ -162,5 +162,3 @@ def count_cust_accounts(cust_id: str):
     else:
         return -1
     
-
-create_transaction('6432166b9683f20dd51877f8', 'balance', '64321d4d9683f20dd51877fc', 'error handeling', 30000)
