@@ -129,3 +129,20 @@ def get_cust_accounts(cust_id: str):
         return acct_balc
     
     return None #error ocurred
+
+def count_cust_accounts(cust_id: str):
+    url = '{}customers/{}/accounts?key={}'.format(URL_PATH, cust_id, API_KEY)
+
+    response = requests.get( 
+        url, 
+        headers={'content-type':'application/json'},
+        )
+
+    if response.status_code == 200:
+        print('Successful retrieval')
+        resp = response.json()
+        return len(resp)
+    
+    else:
+        return -1
+    
