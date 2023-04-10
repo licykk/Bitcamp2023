@@ -72,7 +72,7 @@ async def setupaccount(interaction: discord.Interaction):
 
     account_cnt = count_cust_accounts(cust_id)
 
-    if account_cnt > 1:
+    if account_cnt >= 1:
         await interaction.response.send_message("You already have an account")
         return
     elif account_cnt == -1:
@@ -83,6 +83,9 @@ async def setupaccount(interaction: discord.Interaction):
     print(acct_id)
     run_transaction(sessionmaker(bind=ENGINE),
                     lambda s: create_account_db(s, cust_id, acct_id))
+    
+    await interaction.response.send_message("Created account for customer " + interaction.user.mention)
+
 
 
 
@@ -118,11 +121,7 @@ async def requestpayment(interaction: discord.Interaction, member: discord.Membe
 
 @bot.tree.command(description="Pays a user a certain amount of money.")
 async def pay(interaction: discord.Interaction, member: discord.Member, amount: int, comment: str=None):
-    if comment is None:
-        comment = "N/A" 
-        await interaction.response.send_message(content=f'{interaction.user.mention} has paid ${amount} to {member.mention}.')
-    else:
-        await interaction.response.send_message(content=f'{interaction.user.mention} has paid ${amount} to {member.mention}. \n Comments: {comment}')
+     
 
     sender_customer_id = run_transaction(sessionmaker(bind=ENGINE),
                 lambda s: get_customer_db(s, interaction.user.id))
@@ -143,7 +142,19 @@ async def pay(interaction: discord.Interaction, member: discord.Member, amount: 
     print(receiver_acct)
 
     medium = 'balance'
-    await create_transaction(sender_acct, medium, receiver_acct, comment, amount)
+    if comment is None:
+        transaction_id = create_transaction(sender_acct, medium, receiver_acct, "N/A", amount)
+    else:
+        transaction_id = create_transaction(sender_acct, medium, receiver_acct, comment, amount)
+
+    if transaction_id is None:
+        await interaction.response.send_message("Transaction failed (insufficient funds?)")
+    else:
+        if comment is None:
+            await interaction.response.send_message(content=f'{interaction.user.mention} has paid ${amount} to {member.mention}.')
+        else:
+            await interaction.response.send_message(content=f'{interaction.user.mention} has paid ${amount} to {member.mention}. \n Comments: {comment}')
+
 
 async def load_extensions():
     for filename in os.listdir("./cogs"):
